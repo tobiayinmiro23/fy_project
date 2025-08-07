@@ -7,8 +7,10 @@ function App() {
   const storage = getStorage();
   const [link, setlink] = useState('')
   const [file, setfile] = useState('')
+  const [loading, setloading] = useState(false)
 
   const upload = () => {
+    setloading(true)
     console.log(file)
     const storageRef = ref(storage, `${Date.now()}${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file)
@@ -19,14 +21,17 @@ function App() {
         console.log(progress)
       },
       (error) => {
+        setloading(false)
         alert(error?.message || 'an error occured,try again later')
       },
       () => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setlink(downloadURL)
+          setloading(false)
           console.log(downloadURL)
             .catch(error => {
+              setloading(false)
               alert(error?.message || 'an error occured,try again later')
             })
         });
@@ -38,14 +43,14 @@ function App() {
     <>
       <h1>Image to link converter</h1>
       <div className='holder'>
-        <div className={link !== '' ? "link" : undefined}>{link}</div>
+        <div className={link !== '' ? "link" : undefined}><a href={link} >{link}</a></div>
         <label className='' >
           <h3>select an image</h3>
         </label>
         <div >
           <input type="file" name="upload" accept="image/*" className='upload' onInput={(e) => { setfile(e.target.files[0]) }
           } id="" />
-          <button onClick={upload}>generate link</button>
+          <button disabled={loading} onClick={upload}>{loading ? 'Loading...' : 'generate link'}</button>
         </div>
       </div>
     </>
