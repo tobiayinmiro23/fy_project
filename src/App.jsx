@@ -50,7 +50,7 @@ function App() {
         <div >
           <input type="file" name="upload" accept="image/*" className='upload' onInput={(e) => { setfile(e.target.files[0]) }
           } id="" />
-          <button disabled={loading} onClick={upload}>{loading ? 'Loading...' : 'generate link'}</button>
+           {file != '' && <button disabled={loading} onClick={upload}>{loading ? 'Loading...' : 'generate link'}</button>}
         </div>
       </div>
     </>
